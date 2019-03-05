@@ -55,6 +55,17 @@
   // Note: _.each does not have a return value, but rather simply runs the
   // iterator function over each item in the input collection.
   _.each = function(collection, iterator) {
+  if (Array.isArray(collection) === true){
+     for (var i = 0; i < collection.length; i++){
+      iterator(collection[i], i , collection) 
+     }
+   } else {
+      for (var key in collection){
+        iterator(collection[key],key, collection)
+      }
+     }
+
+    
   };
 
   // Returns the index at which value can be found in the array, or -1 if value
@@ -76,21 +87,55 @@
 
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, test) {
+   var result =[]
+    for (var i = 0; i < collection.length; i++) {
+      if (test(collection[i]) === true){
+        result.push(collection[i])
+      }
+    }
+    return result
   };
 
   // Return all elements of an array that don't pass a truth test.
   _.reject = function(collection, test) {
+       var result =[]
+    for (var i = 0; i < collection.length; i++) {
+      if (test(collection[i]) !== true){
+        result.push(collection[i])
+      }
+    }
+    return result
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
   };
 
   // Produce a duplicate-free version of the array.
   _.uniq = function(array, isSorted, iterator) {
+       var obj = {};
+       
+       var result = []
+       for (var i = 0; i < array.length; i++) {
+        if (obj[array[i]] === undefined) {
+          obj[array[i]] = 1
+        } else if (obj[array[i]] !== undefined) {
+                obj[array[i]] += 1
+              }
+       }
+       var almostResult = Object.keys(obj);
+       for (var key in almostResult) {
+        result.push(Number(almostResult[key]))
+       }
+return result
   };
 
 
   // Return the results of applying an iterator to each element.
   _.map = function(collection, iterator) {
+      var result = [];
+      for (var i = 0; i < collection.length; i++) {
+        result.push(iterator(collection[i]))
+      }
+      return result
     // map() is a useful primitive iteration function that works a lot
     // like each(), but in addition to running the operation on all
     // the members, it also maintains an array of results.
@@ -135,6 +180,32 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
+      if (accumulator === undefined) {
+        accumulator = collection[0]
+        var newArray = collection.slice(1)
+    for (var i = 0; i < newArray.length; i++) {
+
+        if (newArray[i] === undefined){
+          continue
+        }else{
+        var value = iterator(accumulator, newArray[i])
+           accumulator = value;
+         }
+      }
+      } else {
+      for (var i = 0; i < collection.length; i++) {
+
+        if (collection[i] === undefined){
+          continue
+        }else{
+        var value = iterator(accumulator, collection[i])
+           accumulator = value;
+         }
+      }
+    }
+    
+return accumulator 
+
   };
 
   // Determine if the array or object contains a given value (using `===`).
@@ -252,6 +323,15 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var result = []
+     for (var i = 0; i < array.length; i++){
+      if (array[i] % 2) {
+        result.push(array[i])
+      } else if (array[i] % 3) {
+        result.unshift(array[i])
+      } else { result.push(array[i])}
+     }
+     return result;
   };
 
 
