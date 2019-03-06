@@ -261,6 +261,25 @@ return accumulator
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    if (collection.length === 0){
+      return false;
+    }
+       for (var i = 0; i < collection.length; i++) {
+     if (iterator !== undefined && collection[i] === 0 && iterator(collection[i]) === true) {
+      return true
+      } else if (iterator !== undefined && collection[i] === null || collection[i] === false || collection[i] === undefined || collection[i] == 0 || collection[i] === NaN || collection[i].length === 0){
+        continue
+    } else if (iterator !== undefined) {
+      if (iterator(collection[i]) == true){
+        return true
+      } else if(collection[i].length > 0) {
+        return true
+      }
+    } else {
+      return collection[i] == true
+    }
+  }
+    return false
   };
 
 
@@ -283,11 +302,29 @@ return accumulator
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+  var args = arguments;
+  for (var i = 0; i < args.length; i++) {
+   for (var keys in args[i]) {
+    if (obj[keys] === undefined || obj[keys] !== undefined) {
+      obj[keys] = args[i][keys];
+    }
+   }
+  }
+ return obj
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    var args = arguments;
+    for (var i = 0; i < args.length; i++) {
+      for (var keys in args[i]) {
+        if (obj[keys] === undefined) {
+          obj[keys] = args[i][keys]
+        }
+      }
+    }
+    return obj
   };
 
 
@@ -331,6 +368,20 @@ return accumulator
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+     var cashe = {};
+     
+     return function () {
+     var key = JSON.stringify(arguments);
+     if (cashe[key]) {
+      return cashe[key]
+     } else {
+      var answer = func.apply(this,arguments);
+      cashe[key] = answer
+      return cashe[key]
+     }
+     }
+      
+     
   };
 
   // Delays a function for the given number of milliseconds, and then calls
