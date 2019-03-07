@@ -368,16 +368,16 @@ return accumulator
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
-     var cashe = {};
+     var cache = {};
      
      return function () {
      var key = JSON.stringify(arguments);
-     if (cashe[key]) {
-      return cashe[key]
+     if (cache[key]) {
+      return cache[key]
      } else {
       var answer = func.apply(this,arguments);
-      cashe[key] = answer
-      return cashe[key]
+      cache[key] = answer
+      return cache[key]
      }
      }
       
@@ -391,6 +391,13 @@ return accumulator
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+    const otherArguments = [];
+    for (let i = 2; i < arguments.length; i++) {
+      otherArguments.push(arguments[i]);
+    }
+    setTimeout(function() {
+      func.apply(this, otherArguments)
+    },wait)
   };
 
 
